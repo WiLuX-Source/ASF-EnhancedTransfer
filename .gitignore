@@ -14,7 +14,6 @@ ArchiSteamFarm/resources/ArchiSteamFarm.snk
 ArchiSteamFarm/ArchiSteamFarm/log.txt
 ArchiSteamFarm/ArchiSteamFarm/debug
 ArchiSteamFarm/ArchiSteamFarm/logs
-ArchiSteamFarm
 # Ignore standard out folders for publishing
 **/out
 
