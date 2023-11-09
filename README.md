@@ -22,7 +22,7 @@ Plugin implements following commands:
 Command | Access | Description
 --- | --- | ---
 `etransfer <Bots> <Modes> <Bot>` | `Master` | Sends from given `<Bots>` instances to given `Bot` instance, all Steam inventory items that are matching given `modes`, explained **[below](#modes-parameter)**.
-`etransfer^ <Bots> <ModeAdvanced> <Bot>` | `Master` | Sends from given `<Bots>` instances to given `Bot` instance, all special inventory items that are matching given `AdvancedMode`, explained **[below](#advancedmode-parameter)**.
+`etransfer^ <Bots> <AdvancedMode> <Bot>` | `Master` | Sends from given `<Bots>` instances to given `Bot` instance, all special inventory items that are matching given `AdvancedMode`, explained **[below](#advancedmode-parameter)**.
 ## `Modes` parameter
 
 `<Modes>` argument accepts multiple mode values, separated as usual by a comma. Available mode values are specified below:
