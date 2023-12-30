@@ -10,6 +10,8 @@ using ArchiSteamFarm.Steam.Data;
 namespace EnhancedTransfer;
 
 internal static class Commands {
+	internal static readonly char[] separator = new[] { ',' };
+
 	internal static async Task<string?> TransferItemsNormalWithBot(Bot bot, EAccess access, string mode, string botNameTo) {
 		if (string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
 			ASF.ArchiLogger.LogNullError(null, nameof(mode) + " || " + nameof(botNameTo));
@@ -39,7 +41,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.BotSendingTradeToYourself);
 		}
 
-		string[] modes = mode.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+		string[] modes = mode.Split(separator, StringSplitOptions.RemoveEmptyEntries);
 
 		if (modes.Length == 0) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, nameof(modes)));

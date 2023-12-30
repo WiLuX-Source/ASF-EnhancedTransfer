@@ -2,14 +2,14 @@
 	<Import Project="ArchiSteamFarm/Directory.Build.props" />
 
 	<PropertyGroup>
-		<PluginName>MyAwesomePlugin</PluginName>
-		<Version>1.0.0.0</Version>
+		<PluginName>EnhancedTransfer</PluginName>
+		<Version>1.0.0.1</Version>
 	</PropertyGroup>
 
 	<PropertyGroup>
 		<AnalysisMode>AllEnabledByDefault</AnalysisMode>
 		<ApplicationIcon />
-		<Authors>YourName</Authors>
+		<Authors>Wilux</Authors>
 		<Company>$(Authors)</Company>
 		<Copyright>Copyright © 2022-$([System.DateTime]::UtcNow.Year) $(Company)</Copyright>
 		<Description>$(PluginName) description.</Description>
