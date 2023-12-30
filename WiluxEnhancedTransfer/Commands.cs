@@ -10,7 +10,7 @@ using ArchiSteamFarm.Steam.Data;
 namespace EnhancedTransfer;
 
 internal static class Commands {
-	internal static readonly char[] separator = new[] { ',' };
+	internal static readonly char[] Separator = new[] { ',' };
 
 	internal static async Task<string?> TransferItemsNormalWithBot(Bot bot, EAccess access, string mode, string botNameTo) {
 		if (string.IsNullOrEmpty(botNameTo) || string.IsNullOrEmpty(mode)) {
@@ -41,7 +41,7 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(ArchiSteamFarm.Localization.Strings.BotSendingTradeToYourself);
 		}
 
-		string[] modes = mode.Split(separator, StringSplitOptions.RemoveEmptyEntries);
+		string[] modes = mode.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
 		if (modes.Length == 0) {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, nameof(modes)));
@@ -161,23 +161,42 @@ internal static class Commands {
 			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, nameof(mode)));
 		}
 
-		bool success;
-		string message;
+		string[] modes = mode.Split(Separator, StringSplitOptions.RemoveEmptyEntries);
 
-		switch (mode.ToUpper(CultureInfo.CurrentCulture)) {
-			case "CS":
-			case "CASE":
-				(success, message) = await bot.Actions.SendInventory(730, 2, targetBot.SteamID, filterFunction: static item => (item.Tags != null) && item.Tags.Any(static tag => tag is { Identifier: "Type", Value: "CSGO_Type_WeaponCase" })).ConfigureAwait(false);
-
-				break;
-			case "TF2":
-			case "KEY":
-				(success, message) = await bot.Actions.SendInventory(440, 2, targetBot.SteamID, filterFunction: static item => item.ClassID == 101785959).ConfigureAwait(false);
-
-				break;
-			default:
-				return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid, mode));
+		if (modes.Length == 0) {
+			return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsEmpty, nameof(modes)));
 		}
+
+		HashSet<Asset> inventory = new();
+
+		foreach (string singleMode in modes) {
+			switch (singleMode.ToUpperInvariant()) {
+				case "CS":
+				case "CASE":
+
+					await foreach (Asset asset in bot.ArchiWebHandler.GetInventoryAsync(appID: 730, contextID: 2).ConfigureAwait(false)) {
+						if (asset.Tradable && asset.Tags != null && asset.Tags.Any(static tag => tag is { Identifier: "Type", Value: "CSGO_Type_WeaponCase" })) {
+							inventory.Add(asset);
+						}
+					}
+
+					break;
+				case "TF2":
+				case "KEY":
+
+					await foreach (Asset asset in bot.ArchiWebHandler.GetInventoryAsync(appID: 440, contextID: 2).ConfigureAwait(false)) {
+						if (asset is { Tradable: true, ClassID: 101785959 }) {
+							inventory.Add(asset);
+						}
+					}
+
+					break;
+				default:
+					return bot.Commands.FormatBotResponse(string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.ErrorIsInvalid, mode));
+			}
+		}
+
+		(bool success, string message) = await bot.Actions.SendInventory(inventory, targetBot.SteamID).ConfigureAwait(false);
 
 		return bot.Commands.FormatBotResponse(success ? message : string.Format(CultureInfo.CurrentCulture, ArchiSteamFarm.Localization.Strings.WarningFailedWithError, message));
 	}
