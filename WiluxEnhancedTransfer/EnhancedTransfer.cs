@@ -55,9 +55,10 @@ internal sealed class EnhancedTransfer : IBotCommand2, IBotTradeOffer {
 			return false;
 		}
 
-		ASF.ArchiLogger.LogGenericInfo($"Accepted trade request from {tradeOffer.OtherSteamID64}");
+		bool result = bots.Contains(tradeOffer.OtherSteamID64);
+		ASF.ArchiLogger.LogGenericInfo($"{(result ? "Accepted" : "Ignored")} trade request from {tradeOffer.OtherSteamID64}");
 
-		return bots.Contains(tradeOffer.OtherSteamID64);
+		return result;
 	}
 }
 #pragma warning restore CA1812 // ASF uses this class during runtime
